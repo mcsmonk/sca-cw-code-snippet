@@ -1,0 +1,394 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32f4-fpu.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.reset,"ax",%progbits
+  18              		.align	1
+  19              		.global	reset
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	reset:
+  26              	.LFB2:
+  27              		.file 1 "stm32f4-fpu.c"
+   1:stm32f4-fpu.c **** /*
+   2:stm32f4-fpu.c ****     This file is part of the ChipWhisperer Example Targets
+   3:stm32f4-fpu.c ****     Copyright (C) 2012-2017 NewAE Technology Inc.
+   4:stm32f4-fpu.c **** 
+   5:stm32f4-fpu.c ****     This program is free software: you can redistribute it and/or modify
+   6:stm32f4-fpu.c ****     it under the terms of the GNU General Public License as published by
+   7:stm32f4-fpu.c ****     the Free Software Foundation, either version 3 of the License, or
+   8:stm32f4-fpu.c ****     (at your option) any later version.
+   9:stm32f4-fpu.c **** 
+  10:stm32f4-fpu.c ****     This program is distributed in the hope that it will be useful,
+  11:stm32f4-fpu.c ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:stm32f4-fpu.c ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:stm32f4-fpu.c ****     GNU General Public License for more details.
+  14:stm32f4-fpu.c **** 
+  15:stm32f4-fpu.c ****     You should have received a copy of the GNU General Public License
+  16:stm32f4-fpu.c ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:stm32f4-fpu.c **** */
+  18:stm32f4-fpu.c **** 
+  19:stm32f4-fpu.c **** #include <stdint.h>
+  20:stm32f4-fpu.c **** #include <stdlib.h>
+  21:stm32f4-fpu.c **** #include <string.h>
+  22:stm32f4-fpu.c **** #include <stdio.h>
+  23:stm32f4-fpu.c **** 
+  24:stm32f4-fpu.c **** #include "hal.h"
+  25:stm32f4-fpu.c **** #include "simpleserial.h"
+  26:stm32f4-fpu.c **** 
+  27:stm32f4-fpu.c **** uint8_t get_pt(uint8_t* pt)
+  28:stm32f4-fpu.c **** {
+  29:stm32f4-fpu.c ****     float a[4],b[4];
+  30:stm32f4-fpu.c ****     float c[4];
+  31:stm32f4-fpu.c **** 	uint8_t *pc = (uint8_t*)c;
+  32:stm32f4-fpu.c ****     int i;
+  33:stm32f4-fpu.c **** 
+  34:stm32f4-fpu.c ****     for(i = 0 ; i < 4 ;i++) {
+  35:stm32f4-fpu.c ****         //a[i] = (float)rand()/(float)(RAND_MAX/2.0);
+  36:stm32f4-fpu.c ****         //b[i] = (float)rand()/(float)(RAND_MAX/2.0);
+  37:stm32f4-fpu.c ****         a[i] = pt[i] * 2.5 + 1;
+  38:stm32f4-fpu.c ****         b[i] = pt[i] * (-2.5) - 1;
+  39:stm32f4-fpu.c ****     }
+  40:stm32f4-fpu.c **** 
+  41:stm32f4-fpu.c ****     trigger_high();
+  42:stm32f4-fpu.c ****     
+  43:stm32f4-fpu.c ****     for(i = 0 ; i < 4 ;i++) {
+  44:stm32f4-fpu.c ****         c[i] = a[i] * b[i];
+  45:stm32f4-fpu.c ****     }
+  46:stm32f4-fpu.c ****     
+  47:stm32f4-fpu.c ****     trigger_low();
+  48:stm32f4-fpu.c **** 
+  49:stm32f4-fpu.c ****     for(i = 0 ; i < 16 ;i++) {
+  50:stm32f4-fpu.c ****         pt[i] = pc[i];
+  51:stm32f4-fpu.c **** 	}
+  52:stm32f4-fpu.c ****     
+  53:stm32f4-fpu.c **** 	simpleserial_put('r', 16, pt);
+  54:stm32f4-fpu.c **** 	return 0x00;
+  55:stm32f4-fpu.c **** }
+  56:stm32f4-fpu.c **** 
+  57:stm32f4-fpu.c **** uint8_t reset(uint8_t* x)
+  58:stm32f4-fpu.c **** {
+  28              		.loc 1 58 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  59:stm32f4-fpu.c **** 	return 0x00;
+  60:stm32f4-fpu.c **** }
+  34              		.loc 1 60 0
+  35 0000 0020     		movs	r0, #0
+  36              	.LVL1:
+  37 0002 7047     		bx	lr
+  38              		.cfi_endproc
+  39              	.LFE2:
+  41              		.global	__aeabi_i2d
+  42              		.global	__aeabi_dmul
+  43              		.global	__aeabi_dadd
+  44              		.global	__aeabi_d2f
+  45              		.global	__aeabi_dsub
+  46              		.section	.text.get_pt,"ax",%progbits
+  47              		.align	1
+  48              		.global	get_pt
+  49              		.syntax unified
+  50              		.thumb
+  51              		.thumb_func
+  52              		.fpu fpv4-sp-d16
+  54              	get_pt:
+  55              	.LFB1:
+  28:stm32f4-fpu.c ****     float a[4],b[4];
+  56              		.loc 1 28 0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 64
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60              	.LVL2:
+  61 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  62              	.LCFI0:
+  63              		.cfi_def_cfa_offset 36
+  64              		.cfi_offset 4, -36
+  65              		.cfi_offset 5, -32
+  66              		.cfi_offset 6, -28
+  67              		.cfi_offset 7, -24
+  68              		.cfi_offset 8, -20
+  69              		.cfi_offset 9, -16
+  70              		.cfi_offset 10, -12
+  71              		.cfi_offset 11, -8
+  72              		.cfi_offset 14, -4
+  73 0004 91B0     		sub	sp, sp, #68
+  74              	.LCFI1:
+  75              		.cfi_def_cfa_offset 104
+  76              	.LVL3:
+  77 0006 04AF     		add	r7, sp, #16
+  78 0008 08AE     		add	r6, sp, #32
+  79 000a C31C     		adds	r3, r0, #3
+  37:stm32f4-fpu.c ****         b[i] = pt[i] * (-2.5) - 1;
+  80              		.loc 1 37 0
+  81 000c DFF8A4B0 		ldr	fp, .L9+8
+  82 0010 0393     		str	r3, [sp, #12]
+  28:stm32f4-fpu.c ****     float a[4],b[4];
+  83              		.loc 1 28 0
+  84 0012 0446     		mov	r4, r0
+  85 0014 451E     		subs	r5, r0, #1
+  86 0016 B946     		mov	r9, r7
+  87 0018 B046     		mov	r8, r6
+  37:stm32f4-fpu.c ****         b[i] = pt[i] * (-2.5) - 1;
+  88              		.loc 1 37 0
+  89 001a 4FF0000A 		mov	r10, #0
+  90              	.LVL4:
+  91              	.L3:
+  37:stm32f4-fpu.c ****         b[i] = pt[i] * (-2.5) - 1;
+  92              		.loc 1 37 0 is_stmt 0 discriminator 3
+  93 001e 15F8010F 		ldrb	r0, [r5, #1]!	@ zero_extendqisi2
+  94 0022 FFF7FEFF 		bl	__aeabi_i2d
+  95              	.LVL5:
+  96 0026 0022     		movs	r2, #0
+  97 0028 204B     		ldr	r3, .L9
+  98 002a CDE90001 		strd	r0, [sp]
+  99 002e FFF7FEFF 		bl	__aeabi_dmul
+ 100              	.LVL6:
+ 101 0032 5246     		mov	r2, r10
+ 102 0034 5B46     		mov	r3, fp
+ 103 0036 FFF7FEFF 		bl	__aeabi_dadd
+ 104              	.LVL7:
+ 105 003a FFF7FEFF 		bl	__aeabi_d2f
+ 106              	.LVL8:
+  38:stm32f4-fpu.c ****     }
+ 107              		.loc 1 38 0 is_stmt 1 discriminator 3
+ 108 003e 0022     		movs	r2, #0
+  37:stm32f4-fpu.c ****         b[i] = pt[i] * (-2.5) - 1;
+ 109              		.loc 1 37 0 discriminator 3
+ 110 0040 47F8040B 		str	r0, [r7], #4	@ float
+  38:stm32f4-fpu.c ****     }
+ 111              		.loc 1 38 0 discriminator 3
+ 112 0044 1A4B     		ldr	r3, .L9+4
+ 113 0046 DDE90001 		ldrd	r0, [sp]
+ 114 004a FFF7FEFF 		bl	__aeabi_dmul
+ 115              	.LVL9:
+ 116 004e 5B46     		mov	r3, fp
+ 117 0050 5246     		mov	r2, r10
+ 118 0052 FFF7FEFF 		bl	__aeabi_dsub
+ 119              	.LVL10:
+ 120 0056 FFF7FEFF 		bl	__aeabi_d2f
+ 121              	.LVL11:
+  34:stm32f4-fpu.c ****         //a[i] = (float)rand()/(float)(RAND_MAX/2.0);
+ 122              		.loc 1 34 0 discriminator 3
+ 123 005a 039B     		ldr	r3, [sp, #12]
+  38:stm32f4-fpu.c ****     }
+ 124              		.loc 1 38 0 discriminator 3
+ 125 005c 46F8040B 		str	r0, [r6], #4	@ float
+  34:stm32f4-fpu.c ****         //a[i] = (float)rand()/(float)(RAND_MAX/2.0);
+ 126              		.loc 1 34 0 discriminator 3
+ 127 0060 9D42     		cmp	r5, r3
+ 128 0062 DCD1     		bne	.L3
+  41:stm32f4-fpu.c ****     
+ 129              		.loc 1 41 0
+ 130 0064 FFF7FEFF 		bl	trigger_high
+ 131              	.LVL12:
+  44:stm32f4-fpu.c ****     }
+ 132              		.loc 1 44 0
+ 133 0068 0CAD     		add	r5, sp, #48
+ 134              	.LVL13:
+  41:stm32f4-fpu.c ****     
+ 135              		.loc 1 41 0
+ 136 006a 0023     		movs	r3, #0
+ 137              	.LVL14:
+ 138              	.L4:
+  44:stm32f4-fpu.c ****     }
+ 139              		.loc 1 44 0 discriminator 3
+ 140 006c 09EB0300 		add	r0, r9, r3
+ 141 0070 08EB0301 		add	r1, r8, r3
+ 142 0074 D0ED007A 		vldr.32	s15, [r0]
+ 143 0078 91ED007A 		vldr.32	s14, [r1]
+ 144 007c EA18     		adds	r2, r5, r3
+ 145 007e 67EE877A 		vmul.f32	s15, s15, s14
+ 146 0082 0433     		adds	r3, r3, #4
+  43:stm32f4-fpu.c ****         c[i] = a[i] * b[i];
+ 147              		.loc 1 43 0 discriminator 3
+ 148 0084 102B     		cmp	r3, #16
+  44:stm32f4-fpu.c ****     }
+ 149              		.loc 1 44 0 discriminator 3
+ 150 0086 C2ED007A 		vstr.32	s15, [r2]
+  43:stm32f4-fpu.c ****         c[i] = a[i] * b[i];
+ 151              		.loc 1 43 0 discriminator 3
+ 152 008a EFD1     		bne	.L4
+  47:stm32f4-fpu.c **** 
+ 153              		.loc 1 47 0
+ 154 008c FFF7FEFF 		bl	trigger_low
+ 155              	.LVL15:
+  49:stm32f4-fpu.c ****         pt[i] = pc[i];
+ 156              		.loc 1 49 0
+ 157 0090 0021     		movs	r1, #0
+ 158              	.LVL16:
+ 159              	.L5:
+  50:stm32f4-fpu.c **** 	}
+ 160              		.loc 1 50 0 discriminator 3
+ 161 0092 6B5C     		ldrb	r3, [r5, r1]	@ zero_extendqisi2
+ 162 0094 6354     		strb	r3, [r4, r1]
+  49:stm32f4-fpu.c ****         pt[i] = pc[i];
+ 163              		.loc 1 49 0 discriminator 3
+ 164 0096 0131     		adds	r1, r1, #1
+ 165              	.LVL17:
+ 166 0098 1029     		cmp	r1, #16
+ 167 009a FAD1     		bne	.L5
+  53:stm32f4-fpu.c **** 	return 0x00;
+ 168              		.loc 1 53 0
+ 169 009c 2246     		mov	r2, r4
+ 170 009e 7220     		movs	r0, #114
+ 171 00a0 FFF7FEFF 		bl	simpleserial_put
+ 172              	.LVL18:
+  55:stm32f4-fpu.c **** 
+ 173              		.loc 1 55 0
+ 174 00a4 0020     		movs	r0, #0
+ 175 00a6 11B0     		add	sp, sp, #68
+ 176              	.LCFI2:
+ 177              		.cfi_def_cfa_offset 36
+ 178              		@ sp needed
+ 179 00a8 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 180              	.LVL19:
+ 181              	.L10:
+ 182              		.align	2
+ 183              	.L9:
+ 184 00ac 00000440 		.word	1074003968
+ 185 00b0 000004C0 		.word	-1073479680
+ 186 00b4 0000F03F 		.word	1072693248
+ 187              		.cfi_endproc
+ 188              	.LFE1:
+ 190              		.section	.text.startup.main,"ax",%progbits
+ 191              		.align	1
+ 192              		.global	main
+ 193              		.syntax unified
+ 194              		.thumb
+ 195              		.thumb_func
+ 196              		.fpu fpv4-sp-d16
+ 198              	main:
+ 199              	.LFB3:
+  61:stm32f4-fpu.c **** 
+  62:stm32f4-fpu.c **** int main(void)
+  63:stm32f4-fpu.c **** {
+ 200              		.loc 1 63 0
+ 201              		.cfi_startproc
+ 202              		@ Volatile: function does not return.
+ 203              		@ args = 0, pretend = 0, frame = 0
+ 204              		@ frame_needed = 0, uses_anonymous_args = 0
+ 205 0000 08B5     		push	{r3, lr}
+ 206              	.LCFI3:
+ 207              		.cfi_def_cfa_offset 8
+ 208              		.cfi_offset 3, -8
+ 209              		.cfi_offset 14, -4
+  64:stm32f4-fpu.c ****     platform_init();
+ 210              		.loc 1 64 0
+ 211 0002 FFF7FEFF 		bl	platform_init
+ 212              	.LVL20:
+  65:stm32f4-fpu.c **** 	init_uart();	
+ 213              		.loc 1 65 0
+ 214 0006 FFF7FEFF 		bl	init_uart
+ 215              	.LVL21:
+  66:stm32f4-fpu.c **** 	trigger_setup();
+ 216              		.loc 1 66 0
+ 217 000a FFF7FEFF 		bl	trigger_setup
+ 218              	.LVL22:
+  67:stm32f4-fpu.c ****     init_fpu();
+ 219              		.loc 1 67 0
+ 220 000e FFF7FEFF 		bl	init_fpu
+ 221              	.LVL23:
+  68:stm32f4-fpu.c **** 
+  69:stm32f4-fpu.c ****  	/* Uncomment this to get a HELLO message for debug */
+  70:stm32f4-fpu.c **** 	/*
+  71:stm32f4-fpu.c **** 	putch('h');
+  72:stm32f4-fpu.c **** 	putch('e');
+  73:stm32f4-fpu.c **** 	putch('l');
+  74:stm32f4-fpu.c **** 	putch('l');
+  75:stm32f4-fpu.c **** 	putch('o');
+  76:stm32f4-fpu.c **** 	putch('\n');
+  77:stm32f4-fpu.c **** 	*/
+  78:stm32f4-fpu.c **** 
+  79:stm32f4-fpu.c **** 	simpleserial_init();
+ 222              		.loc 1 79 0
+ 223 0012 FFF7FEFF 		bl	simpleserial_init
+ 224              	.LVL24:
+  80:stm32f4-fpu.c ****     #if SS_VER == SS_VER_2_0
+  81:stm32f4-fpu.c **** 	;
+  82:stm32f4-fpu.c ****     #else
+  83:stm32f4-fpu.c ****     simpleserial_addcmd('p', 16,  get_pt);
+ 225              		.loc 1 83 0
+ 226 0016 064A     		ldr	r2, .L13
+ 227 0018 1021     		movs	r1, #16
+ 228 001a 7020     		movs	r0, #112
+ 229 001c FFF7FEFF 		bl	simpleserial_addcmd
+ 230              	.LVL25:
+  84:stm32f4-fpu.c ****     simpleserial_addcmd('x',  0,   reset);
+ 231              		.loc 1 84 0
+ 232 0020 044A     		ldr	r2, .L13+4
+ 233 0022 0021     		movs	r1, #0
+ 234 0024 7820     		movs	r0, #120
+ 235 0026 FFF7FEFF 		bl	simpleserial_addcmd
+ 236              	.LVL26:
+ 237              	.L12:
+  85:stm32f4-fpu.c ****     #endif
+  86:stm32f4-fpu.c ****     while(1)
+  87:stm32f4-fpu.c ****         simpleserial_get();
+ 238              		.loc 1 87 0 discriminator 1
+ 239 002a FFF7FEFF 		bl	simpleserial_get
+ 240              	.LVL27:
+ 241 002e FCE7     		b	.L12
+ 242              	.L14:
+ 243              		.align	2
+ 244              	.L13:
+ 245 0030 00000000 		.word	get_pt
+ 246 0034 00000000 		.word	reset
+ 247              		.cfi_endproc
+ 248              	.LFE3:
+ 250              		.text
+ 251              	.Letext0:
+ 252              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 253              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 254              		.file 4 "/usr/include/newlib/sys/lock.h"
+ 255              		.file 5 "/usr/include/newlib/sys/_types.h"
+ 256              		.file 6 "/usr/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h"
+ 257              		.file 7 "/usr/include/newlib/sys/reent.h"
+ 258              		.file 8 "/usr/include/newlib/stdlib.h"
+ 259              		.file 9 ".././hal/hal.h"
+ 260              		.file 10 ".././hal/stm32f4/stm32f4_hal.h"
+ 261              		.file 11 ".././simpleserial/simpleserial.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32f4-fpu.c
+     /tmp/cclj22LN.s:18     .text.reset:0000000000000000 $t
+     /tmp/cclj22LN.s:25     .text.reset:0000000000000000 reset
+     /tmp/cclj22LN.s:47     .text.get_pt:0000000000000000 $t
+     /tmp/cclj22LN.s:54     .text.get_pt:0000000000000000 get_pt
+     /tmp/cclj22LN.s:184    .text.get_pt:00000000000000ac $d
+     /tmp/cclj22LN.s:191    .text.startup.main:0000000000000000 $t
+     /tmp/cclj22LN.s:198    .text.startup.main:0000000000000000 main
+     /tmp/cclj22LN.s:245    .text.startup.main:0000000000000030 $d
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+__aeabi_i2d
+__aeabi_dmul
+__aeabi_dadd
+__aeabi_d2f
+__aeabi_dsub
+trigger_high
+trigger_low
+simpleserial_put
+platform_init
+init_uart
+trigger_setup
+init_fpu
+simpleserial_init
+simpleserial_addcmd
+simpleserial_get
